@@ -1,0 +1,20 @@
+#!/bin/bash
+set -o errexit
+
+if [ ! -f /tmp/debian-11-genericcloud-amd64.qcow2 ];then
+  wget -P /tmp -N https://cloud.debian.org/images/cloud/bullseye/latest/debian-11-genericcloud-amd64.qcow2
+fi
+
+qm create {{id}} --name "{{name}}" --memory 1024 --net0 virtio,bridge={{bridge}}
+
+qm importdisk {{id}} /tmp/ debian-11-genericcloud-amd64.qcow2debian-11-genericcloud-amd64.qcow2{{storage}} -format qcow2
+
+qm set {{id}} --scsihw virtio-scsi-pci --scsi0 {{storage}}:{{id}}/vm-{{id}}-disk-0.qcow2
+
+qm set {{id}} --ide2 {{storage}}:cloudinit
+
+qm set {{id}} --boot c --bootdisk scsi0
+
+qm set {{id}} --serial0 socket --vga serial0
+
+qm template {{id}}

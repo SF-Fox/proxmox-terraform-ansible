@@ -1,0 +1,2 @@
+[proxmox]
+pve1 ansible_connection=ssh ansible_host=130.136.3.4 ansible_port=2222 ansible_user=root

@@ -1,0 +1,13 @@
+- name: "TP: prepare proxmox server"
+  hosts: proxmox
+  become: true
+  vars:
+    - id: 9002
+    - name: "debian-bullseye-cloudinit-latest-tpl"
+    - storage: "Cephdisk"
+    - bridge: "vmbr0"
+  tasks:
+    - name: "TP: Copy vm template creation script"
+      template: src=./template/setup-image.sh.j2 dest=/tmp/setup-template.sh mode=0777
+    - name: "TP: Create cloud init debian template"
+      command: sh /tmp/setup-template.sh

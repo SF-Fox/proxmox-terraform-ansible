@@ -1,0 +1,25 @@
+#!/bin/bash
+
+#When set option is on, when any command fails the shell immediately shall exit
+set -o errexit
+
+if qm list | grep -q  {{id}} ; then
+        qm destroy {{id}} --purge    
+fi
+
+if [ ! -f /tmp/debian-11-genericcloud-amd64.qcow2 ];then
+    wget -P /tmp -N https://cloud.debian.org/images/cloud/bullseye/latest/debian-11-genericcloud-amd64.qcow2
+fi
+
+qm create {{id}} --name "{{name}}" --memory 1024 --net0 virtio,bridge={{bridge}}
+qm importdisk {{id}} /tmp/debian-11-genericcloud-amd64.qcow2 {{storage}} -format qcow2
+qm set {{id}} --ide0 {{storage}}:vm-{{id}}-disk-0 #Cephdisk:vm-9002-disk-0
+qm set {{id}} --ide2 {{storage}}:cloudinit
+qm set {{id}} --boot c --bootdisk ide0
+qm set {{id}} --serial0 socket --vga serial0
+
+#va inserito anche pubkey diretto qui?
+#si fa il resize del disco facendo il template o lo si fa dopo specificandolo macchina per macchina?
+
+qm template {{id}}
+
