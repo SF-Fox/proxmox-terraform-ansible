@@ -15,9 +15,14 @@ variable "target_node" {
   default = "proxmox"
 }
 
+variable "ip" {
+  default = "50"
+}
+
 variable "target_lan" {
   default = "130.136.3"
 }
+
 variable "target_gw" {
   default = "130.136.3.254"
 }
