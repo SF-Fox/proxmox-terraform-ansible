@@ -28,13 +28,16 @@ resource "proxmox_vm_qemu" "www" { ### www nome che chiama terraform
     ipconfig0   = "ip=${var.target_lan}.${var.ip}/24,gw=${var.target_gw}"
 
 
-disk {
-    slot    = 0                                                 
-    size    = "50G"                                             
-    type    = "ide"                                           
-    storage = "Cephdisk" 
-  }                         
+#disk {
+#    slot    = 0                                                 
+#    size    = "50G"                                             
+#    type    = "ide"                                           
+#    storage = "Cephdisk" 
+#  }                         
 }
+
+
+
 #
 #resource "proxmox_vm_qemu" "testone" { ### www nome che chiama terraform
 #    name        = "testone" #nome dentro proxmox
