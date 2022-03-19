@@ -14,20 +14,19 @@ provider "proxmox" {
   pm_user           = var.pm_user 
 }          
 
+####### WWW
 resource "proxmox_vm_qemu" "www" { ### www nome che chiama terraform
     name        = "www" #nome dentro proxmox
     target_node = "pve1"
     clone = "debian-bullseye-cloudinit-latest-tpl" #nome template clone
     os_type     = "cloud-init"
-    vmid        = "105" #id macchina dentro proxmox
+    vmid        = "10${var.ip-www}" #id macchina dentro proxmox
     onboot      = true
     bootdisk	= "ide0"
     full_clone  = false
     memory      = 512
     cores       = 1
-    ipconfig0   = "ip=${var.target_lan}.${var.ip}/24,gw=${var.target_gw}"
-
-
+    ipconfig0   = "ip=${var.target_lan}.${var.ip-www}/24,gw=${var.target_gw}"
 #disk {
 #    slot    = 0                                                 
 #    size    = "50G"                                             
@@ -36,31 +35,74 @@ resource "proxmox_vm_qemu" "www" { ### www nome che chiama terraform
 #  }                         
 }
 
+####### DNS
+resource "proxmox_vm_qemu" "dns" {
+    name        = "dns"
+    target_node = "pve1"
+    clone = "debian-bullseye-cloudinit-latest-tpl" #nome template clone
+    os_type     = "cloud-init"
+    vmid        = "10${var.ip-dns}" #id macchina dentro proxmox
+    onboot      = true
+    full_clone  = false
+    memory      = 512
+    cores       = 1
+    ipconfig0   = "ip=${var.target_lan}.${var.ip-dns}/24,gw=${var.target_gw}"
+}
 
+####### MDWIKI
+resource "proxmox_vm_qemu" "mdwiki" {
+    name        = "mdwiki"
+    target_node = "pve1"
+    clone = "debian-bullseye-cloudinit-latest-tpl" #nome template clone
+    os_type     = "cloud-init"
+    vmid        = "10${var.ip-mdwiki}" #id macchina dentro proxmox
+    onboot      = true
+    full_clone  = false
+    memory      = 512
+    cores       = 1
+    ipconfig0   = "ip=${var.target_lan}.${var.ip-mdwiki}/24,gw=${var.target_gw}"
+}
 
-#
-#resource "proxmox_vm_qemu" "testone" { ### www nome che chiama terraform
-#    name        = "testone" #nome dentro proxmox
-#    target_node = "pve1"
-#  
-#    ### or for a Clone VM operation
-#    clone = "debian-bullseye-cloudinit-latest-tpl" #nome template clone
-#  
-#    os_type     = "cloud-init"
-#    vmid        = "106" #id macchina dentro proxmox
-#   # bootdisk	= "ide0"
-#    onboot      = true
-#    full_clone  = false
-#    memory      = 512
-#    cores       = 1
-#    ipconfig0   = "gw=130.136.3.254,ip=130.136.3.51/24"
-#
-##disk {   
-# #   slot    = 0                                                 
-#  #  size    = "50G"                                           
-#   # type    = "ide"                                           
-#    #storage = "Cephdisk" 
-#  #}                         
-#}
-#
-#Cephdisk:base-9002-disk-0/vm-105-disk-0
+####### VAULT
+resource "proxmox_vm_qemu" "vault" {
+    name        = "vault"
+    target_node = "pve1"
+    clone = "debian-bullseye-cloudinit-latest-tpl" #nome template clone
+    os_type     = "cloud-init"
+    vmid        = "10${var.ip-vault}" #id macchina dentro proxmox
+    onboot      = true
+    full_clone  = false
+    memory      = 1024
+    cores       = 1
+    ipconfig0   = "ip=${var.target_lan}.${var.ip-vault}/24,gw=${var.target_gw}"
+}
+
+####### LDAP
+resource "proxmox_vm_qemu" "ldap" {
+    name        = "ldap"
+    target_node = "pve1"
+    clone = "debian-bullseye-cloudinit-latest-tpl" #nome template clone
+    os_type     = "cloud-init"
+    vmid        = "10${var.ip-ldap}" #id macchina dentro proxmox
+    onboot      = true
+    full_clone  = false
+    memory      = 1024
+    cores       = 1
+    ipconfig0   = "ip=${var.target_lan}.${var.ip-ldap}/24,gw=${var.target_gw}"
+}
+
+####### DHCP
+resource "proxmox_vm_qemu" "dhcp" {
+    name        = "dhcp"
+    target_node = "pve1"
+    clone = "debian-bullseye-cloudinit-latest-tpl" #nome template clone
+    os_type     = "cloud-init"
+    vmid        = "10${var.ip-dhcp}" #id macchina dentro proxmox
+    onboot      = true
+    full_clone  = false
+    memory      = 512
+    cores       = 1
+    ipconfig0   = "ip=${var.target_lan}.${var.ip-dhcp}/24,gw=${var.target_gw}"
+}
+
+  
