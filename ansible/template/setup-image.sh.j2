@@ -18,8 +18,8 @@ qm set {{id}} --ide2 {{storage}}:cloudinit
 qm set {{id}} --boot c --bootdisk ide0
 qm set {{id}} --serial0 socket --vga serial0
 
-#va inserito anche pubkey diretto qui?
-#si fa il resize del disco facendo il template o lo si fa dopo specificandolo macchina per macchina?
+#va inserito anche pubkey diretto qui? NO PERCHE' VIENE PRESA DAL TEMPLATE
+#si fa il resize del disco facendo il template o lo si fa dopo specificandolo macchina per macchina? NON FUNZIONA IL RESIZE AUTOMATICO DEL DISCO TRAMITE COMANDO PER ORA, INFATTI NELLO SCRIPT DI CREAZIONE DI TERRAFORM E' COMMENTATO
 
 qm template {{id}}
 
