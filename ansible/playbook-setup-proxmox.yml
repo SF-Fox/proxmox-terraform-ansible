@@ -2,9 +2,9 @@
   hosts: proxmox
   become: true
   vars:
-    - id: 9002
-    - name: "debian-bullseye-cloudinit-latest-tpl"
-    - storage: "Cephdisk"
+    - id: 9003
+    - name: "debian-bullseye-cloudinit-latest"
+    - storage: "storage"
     - bridge: "vmbr0"
   tasks:
     - name: "TP: Copy vm template creation script"

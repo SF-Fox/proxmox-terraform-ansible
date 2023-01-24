@@ -13,20 +13,33 @@ provider "proxmox" {
   pm_password       = var.pm_password
   pm_user           = var.pm_user 
 }          
-
-####### WWW
-resource "proxmox_vm_qemu" "www" { ### www nome che chiama terraform
-    name        = "www" #nome dentro proxmox
+####### DNS
+resource "proxmox_vm_qemu" "dns" {
+    name        = "dns"
     target_node = "pve1"
-    clone = "debian-bullseye-cloudinit-latest-tpl" #nome template clone
+    clone = "debian-bullseye-cloudinit-latest" #nome template clone
     os_type     = "cloud-init"
-    vmid        = "10${var.ip-www}" #id macchina dentro proxmox
+    vmid        = "10${var.ip-dns}" #id macchina dentro proxmox
     onboot      = true
-    bootdisk	= "ide0"
-    full_clone  = false
+    full_clone  = true
     memory      = 512
     cores       = 1
-    ipconfig0   = "ip=${var.target_lan}.${var.ip-www}/24,gw=${var.target_gw}"
+    ipconfig0   = "ip=${var.target_lan}.${var.ip-dns}/24,gw=${var.target_gw}"
+}
+
+####### PROXY
+resource "proxmox_vm_qemu" "proxy" { ### www nome che chiama terraform
+    name        = "proxy" #nome dentro proxmox
+    target_node = "pve2"
+    clone = "debian-bullseye-cloudinit-latest" #nome template clone
+    os_type     = "cloud-init"
+    vmid        = "10${var.ip-proxy}" #id macchina dentro proxmox
+    onboot      = true
+    bootdisk	= "ide0"
+    full_clone  = true
+    memory      = 512
+    cores       = 1
+    ipconfig0   = "ip=${var.target_lan}.${var.ip-proxy}/24,gw=${var.target_gw}"
 #disk {
 #    slot    = 0                                                 
 #    size    = "50G"                                             
@@ -35,71 +48,57 @@ resource "proxmox_vm_qemu" "www" { ### www nome che chiama terraform
 #  }                         
 }
 
-####### DNS
-resource "proxmox_vm_qemu" "dns" {
-    name        = "dns"
-    target_node = "pve1"
-    clone = "debian-bullseye-cloudinit-latest-tpl" #nome template clone
-    os_type     = "cloud-init"
-    vmid        = "10${var.ip-dns}" #id macchina dentro proxmox
-    onboot      = true
-    full_clone  = false
-    memory      = 512
-    cores       = 1
-    ipconfig0   = "ip=${var.target_lan}.${var.ip-dns}/24,gw=${var.target_gw}"
-}
-
-####### MDWIKI
-resource "proxmox_vm_qemu" "mdwiki" {
-    name        = "mdwiki"
-    target_node = "pve1"
-    clone = "debian-bullseye-cloudinit-latest-tpl" #nome template clone
-    os_type     = "cloud-init"
-    vmid        = "10${var.ip-mdwiki}" #id macchina dentro proxmox
-    onboot      = true
-    full_clone  = false
-    memory      = 512
-    cores       = 1
-    ipconfig0   = "ip=${var.target_lan}.${var.ip-mdwiki}/24,gw=${var.target_gw}"
-}
-
 ####### VAULT
 resource "proxmox_vm_qemu" "vault" {
     name        = "vault"
     target_node = "pve1"
-    clone = "debian-bullseye-cloudinit-latest-tpl" #nome template clone
+    clone = "debian-bullseye-cloudinit-latest" #nome template clone
     os_type     = "cloud-init"
     vmid        = "10${var.ip-vault}" #id macchina dentro proxmox
     onboot      = true
-    full_clone  = false
+    full_clone  = true
     memory      = 1024
     cores       = 1
     ipconfig0   = "ip=${var.target_lan}.${var.ip-vault}/24,gw=${var.target_gw}"
 }
 
-####### LDAP
-resource "proxmox_vm_qemu" "ldap" {
-    name        = "ldap"
+######## AUTH
+resource "proxmox_vm_qemu" "auth" {
+    name        = "auth"
     target_node = "pve1"
-    clone = "debian-bullseye-cloudinit-latest-tpl" #nome template clone
+    clone = "debian-bullseye-cloudinit-latest" #nome template clone
     os_type     = "cloud-init"
-    vmid        = "10${var.ip-ldap}" #id macchina dentro proxmox
+    vmid        = "10${var.ip-auth}" #id macchina dentro proxmox
     onboot      = true
-    full_clone  = false
-    memory      = 1024
+    full_clone  = true
+    memory      = 512
     cores       = 1
-    ipconfig0   = "ip=${var.target_lan}.${var.ip-ldap}/24,gw=${var.target_gw}"
+    ipconfig0   = "ip=${var.target_lan}.${var.ip-auth}/24,gw=${var.target_gw}"
 }
 
+
+######## NETBOX	
+resource "proxmox_vm_qemu" "netbox" {
+    name        = "netbox"
+    target_node = "pve1"
+    clone = "debian-bullseye-cloudinit-latest" #nome template clone
+    os_type     = "cloud-init"
+    vmid        = "10${var.ip-netbox}" #id macchina dentro proxmox
+    onboot      = true
+    full_clone  = true
+    memory      = 1024
+    cores       = 1
+    ipconfig0   = "ip=${var.target_lan}.${var.ip-netbox}/24,gw=${var.target_gw}"
+}
 ####### DHCP
 resource "proxmox_vm_qemu" "dhcp" {
     name        = "dhcp"
     target_node = "pve1"
-    clone = "debian-bullseye-cloudinit-latest-tpl" #nome template clone
+    clone = "debian-bullseye-cloudinit-latest" #nome template clone
     os_type     = "cloud-init"
     vmid        = "10${var.ip-dhcp}" #id macchina dentro proxmox
     onboot      = true
-    full_clone  = false
+    full_clone  = true
     memory      = 512
     cores       = 1
     ipconfig0   = "ip=${var.target_lan}.${var.ip-dhcp}/24,gw=${var.target_gw}"
