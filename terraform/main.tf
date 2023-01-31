@@ -76,7 +76,6 @@ resource "proxmox_vm_qemu" "auth" {
     ipconfig0   = "ip=${var.target_lan}.${var.ip-auth}/24,gw=${var.target_gw}"
 }
 
-
 ######## NETBOX	
 resource "proxmox_vm_qemu" "netbox" {
     name        = "netbox"
@@ -90,6 +89,7 @@ resource "proxmox_vm_qemu" "netbox" {
     cores       = 1
     ipconfig0   = "ip=${var.target_lan}.${var.ip-netbox}/24,gw=${var.target_gw}"
 }
+
 ####### DHCP
 resource "proxmox_vm_qemu" "dhcp" {
     name        = "dhcp"
@@ -101,6 +101,20 @@ resource "proxmox_vm_qemu" "dhcp" {
     full_clone  = true
     memory      = 512
     cores       = 1
+    ipconfig0   = "ip=${var.target_lan}.${var.ip-dhcp}/24,gw=${var.target_gw}"
+}
+
+###### MATRIX
+resource "proxmox_vm_qemu" "matrix" {
+    name        = "matrix"
+    target_node = "pve2"
+    clone = "debian-bullseye-cloudinit-latest" #nome template clone
+    os_type     = "cloud-init"
+    vmid        = "10${var.ip-matrix}" #id macchina dentro proxmox
+    onboot      = true
+    full_clone  = true
+    memory      = 8192
+    cores       = 4
     ipconfig0   = "ip=${var.target_lan}.${var.ip-dhcp}/24,gw=${var.target_gw}"
 }
 
